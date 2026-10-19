@@ -1,0 +1,11 @@
+{
+  "name": "identity",
+  "private": true,
+  "scripts": {
+    "build": "cd backend/api && npm install && npm run build",
+    "start": "cd backend/api && npm start"
+  },
+  "dependencies": {
+    "playwright": "^1.64.1"
+  }
+}

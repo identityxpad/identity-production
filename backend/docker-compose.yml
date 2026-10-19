@@ -1,0 +1,26 @@
+# API + Postgres. Runs on a normal (cheap, non-GPU) server. The GPU workers run elsewhere
+# and talk to this API over HTTPS. Put a reverse proxy with TLS (Caddy, nginx) in front of :8080.
+services:
+  db:
+    image: postgres:16
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: identity
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?set POSTGRES_PASSWORD in .env}
+      POSTGRES_DB: identity
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  api:
+    build: ./api
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATABASE_URL: postgres://identity:${POSTGRES_PASSWORD}@db:5432/identity
+    depends_on:
+      - db
+    ports:
+      - "8080:8080"
+
+volumes:
+  pgdata:
